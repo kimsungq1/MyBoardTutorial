@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- MyBatis와 DB 연결 설정 -->
+<!-- MyBatis를 사용하는 이유는 SQL의 변환이 용이하고(코드에 내재된 경우보다), 가독성이 좋다는 점 -->
+
+<!-- Setting for connection between 'MyBatis' and 'DB' -->
+<!-- Primary Reason for using 'MyBatis' is convenience by separating 'SQL' from Java code -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/jdbc
+	http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
+	
+	<bean id="dataSourceSpied"
+		class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@localhost:1522:XE" />
+		<property name="username" value="ksk" /> <!-- User ID -->
+		<property name="password" value="1234" /> <!-- User PW -->
+	</bean>
+	
+	<!-- 아래는 log4j-remix를 이용해 로그창에 쿼리와 결과 테이블 표시를 위해 추가함. -->
+	<bean id="dataSource"
+		class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="dataSourceSpied" />
+		<property name="logFormatter">
+			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+				<property name="loggingType" value="MULTI_LINE" />
+				<property name="sqlPrefix" value="SQL : " />
+			</bean>
+		</property>
+	</bean>
+</beans>
+
